@@ -1,85 +1,107 @@
-Replate - Application de Réduction du Gaspillage Alimentaire
-Replate est une application web dont l'objectif est de réduire le gaspillage alimentaire. Elle met en relation des commerçants (merchant) ayant des surplus alimentaires avec des bénéficiaires pour la récupération de ces produits.
+Vous avez raison. Essayons une version plus directe et visuelle.
 
-Ce projet est construit avec Angular (v17+) et utilise une architecture 100% standalone (composants autonomes), Angular Material pour les composants d'interface utilisateur, et TailwindCSS (v3) pour le style personnalisé.
+Voici un README.md structuré pour être aussi clair que possible.
 
-🚀 Objectifs du Sprint 1
-Ce projet est structuré pour répondre aux exigences du Sprint 1, qui se concentre sur les fonctionnalités de base pour les rôles Admin et Merchant :
+Projet Replate
+1. Objectif
+Replate est une application web conçue pour réduire le gaspillage alimentaire. Elle connecte les commerçants (restaurants, boulangeries) avec des associations et des bénéficiaires pour faciliter le don ou la vente à prix réduit des surplus alimentaires.
+
+2. Objectifs du Sprint 1
+Ce sprint se concentre sur les fonctionnalités de base pour les rôles Admin et Merchant, basées sur le backlog :
 
 Gestion des Comptes :
 
-RDT-3 / RDT-71 : Inscription et Connexion des utilisateurs.
+RDT-3 / RDT-71 : Création de compte et Connexion.
 
-RDT-4 : Validation des nouveaux comptes par l'Admin.
+RDT-4 : Écran de validation des comptes par l'Admin.
 
 Gestion des Annonces (Merchant) :
 
 RDT-5 : Publication d'annonces (Don ou Vente).
 
-RDT-6 : Modification des annonces.
+RDT-6 : Modification d'une annonce.
 
-RDT-7 : Suppression des annonces.
+RDT-7 : Suppression d'une annonce.
 
 Application :
 
 RDT-29 : Mise en place d'une application et d'un layout cohérents.
 
-📂 Architecture du Projet (Sprint 1)
-Le projet suit une architecture modulaire basée sur les fonctionnalités ("feature-based"), optimisée pour la maintenance et le "lazy loading" (chargement paresseux).
+3. Pile Technique
+Framework : Angular 17+ (Architecture 100% Standalone)
+
+UI : Angular Material
+
+Style : TailwindCSS v3
+
+4. Architecture du Projet
+Le projet est divisé en quatre zones principales pour séparer clairement les responsabilités.
 
 src/app/
 │
-├── core/               # Logique centrale, services globaux, et gardes
-│   ├── guards/         # (auth.guard.ts, role.guard.ts)
-│   ├── models/         # (user.model.ts, announcement.model.ts, etc.)
-│   └── services/       # (auth.service.ts, menu.service.ts)
+├── core/         # LE CERVEAU : Services globaux et logique métier.
 │
-├── layout/             # Composants de la "coquille" principale du dashboard
-│   ├── main-layout/    # (Conteneur principal avec <router-outlet>)
-│   ├── header/
-│   └── sidenav/        # (La barre latérale dynamique par rôle)
+├── layout/       # LE CORPS : La coquille visuelle (Sidenav, Header).
 │
-├── features/           # Modules métier, chargés en lazy loading
-│   │
-│   ├── auth/           # Pages publiques de Connexion / Inscription
-│   │   ├── login/
-│   │   └── register/
-│   │
-│   ├── admin/          # Pages protégées pour le rôle "Admin"
-│   │   └── validate-accounts/ # (RDT-4)
-│   │
-│   └── merchant/       # Pages protégées pour le rôle "Merchant"
-│       ├── announcement-list/ # (RDT-6, RDT-7)
-│       └── announcement-form/ # (RDT-5)
+├── features/     # LES ORGANES : Les pages de l'application (Login, Admin, Merchant).
 │
-├── shared/             # Composants réutilisables
-│   └── components/
-│       ├── status-badge/     # (ex: "Pending", "Active")
-│       └── confirm-dialog/   # (ex: "Voulez-vous supprimer ?")
-│
-├── app.component.ts    # Composant racine
-├── app.config.ts       # Configuration principale
-└── app.routes.ts       # Fichier de routage principal
-Explication de l'Architecture
-/core (Cœur) : Contient la logique centrale de l'application.
+└── shared/       # LES OUTILS : Composants réutilisables (ex: boutons, badges).
+Explication détaillée des dossiers (Sprint 1)
+src/app/core/ (Le Cerveau)
 
-services/ : AuthService (sait qui est connecté et quel est son rôle) et MenuService (sait quels liens montrer dans la barre latérale).
+services/ :
 
-guards/ : Protège les routes. auth.guard (vérifie si l'utilisateur est connecté) et role.guard (vérifie si l'utilisateur a le bon rôle, ex: "admin").
+auth.service.ts : Gère la connexion, la déconnexion, et sait qui est l'utilisateur (RDT-71).
 
-models/ : Les interfaces TypeScript (contrats) qui définissent nos données, comme User, UserRole, et Announcement.
+menu.service.ts : Sait quels liens montrer dans le Sidenav en fonction du rôle.
 
-/layout (Mise en page) : Gère la structure visuelle persistante du dashboard (barre latérale et en-tête). Le MainLayoutComponent contient le <router-outlet> où les pages des features seront chargées.
+guards/ :
 
-/features (Fonctionnalités) : C'est là que se trouve la logique métier. Chaque dossier correspond à une section de l'application et est chargé en "lazy loading".
+auth.guard.ts : Bloque l'accès aux pages si l'utilisateur n'est pas connecté.
 
-/auth est public.
+role.guard.ts : Bloque l'accès si l'utilisateur n'a pas le bon rôle (ex: un Merchant ne peut pas aller sur /admin).
 
-/admin et /merchant sont protégés par les gardes du dossier /core.
+models/ :
 
-/shared (Partagé) : Contient tous les composants "bêtes" (dumb components) qui sont réutilisés dans plusieurs features, comme le badge de statut ou les dialogues de confirmation.
+user.model.ts : Définit ce qu'est un User (rôle, statut, etc.).
 
-🛠️ Démarrage du Projet
+announcement.model.ts : Définit ce qu'est une Announcement.
+
+src/app/layout/ (Le Corps)
+
+main-layout/ : Le composant principal qui affiche le sidenav, le header et la page actuelle (<router-outlet>).
+
+sidenav/ : La barre latérale qui utilise le MenuService pour s'afficher dynamiquement.
+
+header/ : L'en-tête (barre de recherche, menu profil).
+
+src/app/features/ (Les Organes)
+
+auth/ : Pages publiques.
+
+login/ (RDT-71)
+
+register/ (RDT-3)
+
+admin/ : Pages protégées (pour le rôle "admin").
+
+validate-accounts/ (RDT-4)
+
+merchant/ : Pages protégées (pour le rôle "merchant").
+
+announcement-list/ (RDT-6, RDT-7)
+
+announcement-form/ (RDT-5)
+
+src/app/shared/ (Les Outils)
+
+components/ :
+
+status-badge/ : Le composant réutilisable pour afficher "Pending", "Active", "Cancelled".
+
+confirm-dialog/ : Pop-up pour confirmer les suppressions (RDT-7).
+
+5. Démarrage
 Installer les dépendances :
 
 Bash
