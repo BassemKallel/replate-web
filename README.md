@@ -1,59 +1,93 @@
-# ReplateApp
+Replate - Application de Réduction du Gaspillage Alimentaire
+Replate est une application web dont l'objectif est de réduire le gaspillage alimentaire. Elle met en relation des commerçants (merchant) ayant des surplus alimentaires avec des bénéficiaires pour la récupération de ces produits.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.3.
+Ce projet est construit avec Angular (v17+) et utilise une architecture 100% standalone (composants autonomes), Angular Material pour les composants d'interface utilisateur, et TailwindCSS (v3) pour le style personnalisé.
 
-## Development server
+🚀 Objectifs du Sprint 1
+Ce projet est structuré pour répondre aux exigences du Sprint 1, qui se concentre sur les fonctionnalités de base pour les rôles Admin et Merchant :
 
-To start a local development server, run:
+Gestion des Comptes :
 
-```bash
-ng serve
-```
+RDT-3 / RDT-71 : Inscription et Connexion des utilisateurs.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+RDT-4 : Validation des nouveaux comptes par l'Admin.
 
-## Code scaffolding
+Gestion des Annonces (Merchant) :
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+RDT-5 : Publication d'annonces (Don ou Vente).
 
-```bash
-ng generate component component-name
-```
+RDT-6 : Modification des annonces.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+RDT-7 : Suppression des annonces.
 
-```bash
-ng generate --help
-```
+Application :
 
-## Building
+RDT-29 : Mise en place d'une application et d'un layout cohérents.
 
-To build the project run:
+📂 Architecture du Projet (Sprint 1)
+Le projet suit une architecture modulaire basée sur les fonctionnalités ("feature-based"), optimisée pour la maintenance et le "lazy loading" (chargement paresseux).
 
-```bash
-ng build
-```
+src/app/
+│
+├── core/               # Logique centrale, services globaux, et gardes
+│   ├── guards/         # (auth.guard.ts, role.guard.ts)
+│   ├── models/         # (user.model.ts, announcement.model.ts, etc.)
+│   └── services/       # (auth.service.ts, menu.service.ts)
+│
+├── layout/             # Composants de la "coquille" principale du dashboard
+│   ├── main-layout/    # (Conteneur principal avec <router-outlet>)
+│   ├── header/
+│   └── sidenav/        # (La barre latérale dynamique par rôle)
+│
+├── features/           # Modules métier, chargés en lazy loading
+│   │
+│   ├── auth/           # Pages publiques de Connexion / Inscription
+│   │   ├── login/
+│   │   └── register/
+│   │
+│   ├── admin/          # Pages protégées pour le rôle "Admin"
+│   │   └── validate-accounts/ # (RDT-4)
+│   │
+│   └── merchant/       # Pages protégées pour le rôle "Merchant"
+│       ├── announcement-list/ # (RDT-6, RDT-7)
+│       └── announcement-form/ # (RDT-5)
+│
+├── shared/             # Composants réutilisables
+│   └── components/
+│       ├── status-badge/     # (ex: "Pending", "Active")
+│       └── confirm-dialog/   # (ex: "Voulez-vous supprimer ?")
+│
+├── app.component.ts    # Composant racine
+├── app.config.ts       # Configuration principale
+└── app.routes.ts       # Fichier de routage principal
+Explication de l'Architecture
+/core (Cœur) : Contient la logique centrale de l'application.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+services/ : AuthService (sait qui est connecté et quel est son rôle) et MenuService (sait quels liens montrer dans la barre latérale).
 
-## Running unit tests
+guards/ : Protège les routes. auth.guard (vérifie si l'utilisateur est connecté) et role.guard (vérifie si l'utilisateur a le bon rôle, ex: "admin").
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+models/ : Les interfaces TypeScript (contrats) qui définissent nos données, comme User, UserRole, et Announcement.
 
-```bash
-ng test
-```
+/layout (Mise en page) : Gère la structure visuelle persistante du dashboard (barre latérale et en-tête). Le MainLayoutComponent contient le <router-outlet> où les pages des features seront chargées.
 
-## Running end-to-end tests
+/features (Fonctionnalités) : C'est là que se trouve la logique métier. Chaque dossier correspond à une section de l'application et est chargé en "lazy loading".
 
-For end-to-end (e2e) testing, run:
+/auth est public.
 
-```bash
-ng e2e
-```
+/admin et /merchant sont protégés par les gardes du dossier /core.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+/shared (Partagé) : Contient tous les composants "bêtes" (dumb components) qui sont réutilisés dans plusieurs features, comme le badge de statut ou les dialogues de confirmation.
 
-## Additional Resources
+🛠️ Démarrage du Projet
+Installer les dépendances :
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Bash
+
+npm install
+Lancer le serveur de développement :
+
+Bash
+
+npm start
+L'application est disponible sur http://localhost:4200/
