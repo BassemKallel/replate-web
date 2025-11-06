@@ -35,36 +35,33 @@ Le **Sprint 1** se concentre sur les fonctionnalités de base pour les rôles **
 
 L’architecture suit une structure **modulaire orientée fonctionnalités** (_feature-based_) avec **lazy loading** pour une meilleure performance et maintenance.
 
+```bash
 src/app/
 │
-├── core/ # Logique centrale (services, gardes, modèles)
-│ ├── guards/ # auth.guard.ts, role.guard.ts
-│ ├── models/ # user.model.ts, announcement.model.ts
-│ └── services/ # auth.service.ts, menu.service.ts
+├── core/                         # Logique centrale (services, gardes, modèles)
+│   ├── guards/                   # auth.guard.ts, role.guard.ts
+│   ├── models/                   # user.model.ts, announcement.model.ts
+│   └── services/                 # auth.service.ts, menu.service.ts
 │
-├── layout/ # Structure du dashboard
-│ ├── main-layout/ # Conteneur principal avec <router-outlet>
-│ ├── header/ # Barre supérieure
-│ └── sidenav/ # Barre latérale dynamique selon le rôle
+├── layout/                       # Structure du dashboard
+│   ├── main-layout/              # Conteneur principal avec <router-outlet>
+│   ├── header/                   # Barre supérieure
+│   └── sidenav/                  # Barre latérale dynamique selon le rôle
 │
-├── features/ # Modules métier (lazy loading)
-│ ├── auth/ # Authentification (login/register)
-│ ├── admin/ # Espace Admin (validation comptes)
-│ └── merchant/ # Espace Marchand (gestion annonces)
+├── features/                     # Modules métier (lazy loading)
+│   ├── auth/                     # Authentification (login/register)
+│   ├── admin/                    # Espace Admin (validation comptes)
+│   └── merchant/                 # Espace Marchand (gestion annonces)
 │
-├── shared/ # Composants réutilisables
-│ └── components/
-│ ├── status-badge/ # Exemple : "Pending", "Active"
-│ └── confirm-dialog/ # Exemple : "Voulez-vous supprimer ?"
+├── shared/                       # Composants réutilisables
+│   └── components/
+│       ├── status-badge/         # Exemple : "Pending", "Active"
+│       └── confirm-dialog/       # Exemple : "Voulez-vous supprimer ?"
 │
-├── app.component.ts # Composant racine
-├── app.config.ts # Configuration principale
-└── app.routes.ts # Routage principal
+├── app.component.ts              # Composant racine
+├── app.config.ts                 # Configuration principale
+└── app.routes.ts                 # Routage principal
 
-markdown
-Copier le code
-
----
 
 ## 🧠 Détails de l’Architecture
 
