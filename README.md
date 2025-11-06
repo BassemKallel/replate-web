@@ -61,8 +61,6 @@ src/app/
 ├── app.component.ts              # Composant racine
 ├── app.config.ts                 # Configuration principale
 └── app.routes.ts                 # Routage principal
-
-
 ## 🧠 Détails de l’Architecture
 
 ### 🧩 `/core`
@@ -95,6 +93,8 @@ src/app/
 ```bash
 git clone https://github.com/ton-profil/replate-angular.git
 cd replate-angular
+
+
 2️⃣ Installer les dépendances
 bash
 Copier le code
