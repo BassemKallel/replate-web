@@ -56,9 +56,12 @@ export class AuthService {
     // Le mock server simulera un POST et renverra les données
     return this.http.post<User>(`${this.API_URL}/users`, userData).pipe(
       tap(() => {
-        // Idéalement, on redirige l'utilisateur ou on lui dit de
-        // "Veuillez attendre la validation de l'admin" (RDT-4)
-        alert('Inscription réussie ! En attente de validation.');
+        if (userData.role === 'association' || userData.role === 'merchant'){
+          alert('Votre compte a été créé avec succès ! Veuillez attendre la vérification de votre document avant de vous connecter.');
+        }
+        else{
+          alert('Votre compte a été créé avec succès ! Vous pouvez vous connecter.');
+        }
         this.router.navigate(['/auth/login']);
       })
     );

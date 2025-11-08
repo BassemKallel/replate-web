@@ -1,0 +1,38 @@
+/* Importation de la police */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.bg-image {
+    /* Assurez-vous d'avoir l'image (foodDonation2.jpg) dans src/assets/images/ */
+    background: url('../../../../assets/images/login-bg.jpg') center/cover no-repeat;
+}
+
+/* Spinner pour le bouton de chargement */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    border-top-color: #000;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Classes pour les champs d'input (identiques au login) */
+.input-field {
+    @apply mt-2 w-full rounded-lg border-gray-300 p-4 shadow-sm transition focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 focus:outline-none;
+}
+
+/* NOUVEAU : Style pour les champs d'upload */
+.file-upload-label {
+    @apply mt-2 flex h-[58px] items-center justify-center gap-3 rounded-lg border-2 border-dashed border-gray-300 bg-white p-4 shadow-sm text-gray-500 cursor-pointer transition hover:border-yellow-500;
+}
+
+.file-upload-label .file-name {
+    @apply text-sm text-black font-medium overflow-hidden text-ellipsis whitespace-nowrap;
+}
