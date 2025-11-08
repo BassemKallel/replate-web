@@ -1,0 +1,24 @@
+/* Importation de la police (peut aussi être dans index.html) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.bg-image {
+    /* Assurez-vous d'avoir l'image (foodDonation.jpg) dans src/assets/images/ */
+    background: url('../../../../assets/images/login-bg.jpg') center/cover no-repeat;
+}
+
+/* Spinner pour le bouton de chargement */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    border-top-color: #000;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
