@@ -20,6 +20,10 @@ export class AuthService {
     this.loadUserFromStorage();
   }
 
+  public getCurrentUserRole(): string | null {
+    return this.currentUserValue ? this.currentUserValue.role : null;
+  }
+
   public get currentUserValue(): User | null {
     return this.currentUserSubject.value;
   }

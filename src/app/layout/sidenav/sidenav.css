@@ -1,0 +1,134 @@
+/* ─── Sidebar ───────────────────────────────────────────── */
+.sidebar {
+    width: 70px;
+    background: #fff;
+    border-right: 1px solid #e2e8f0;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar:hover {
+    width: 230px;
+}
+
+/* Logo section */
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.sidebar:hover .logo-section {
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    background: #FDBF60;
+    border-radius: 10px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.logo-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    margin-left: 0;
+}
+
+.logo-section h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.logo-section p {
+    font-size: 12px;
+    color: #a0aec0;
+}
+
+.logo-section h1,
+.logo-section p {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
+    margin: 0;
+}
+
+
+.sidebar:hover .logo-section h1,
+.sidebar:hover .logo-section p {
+    opacity: 1;
+    width: auto;
+    margin-left: 12px;
+
+}
+
+
+
+.nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #718096;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav a:hover,
+.nav a.active {
+    background-color: #f7f8fa;
+    color: #FDBF60;
+}
+
+.nav li {
+    margin-bottom: 8px;
+}
+
+.nav a:hover {
+    background: #f0f0f0;
+}
+
+/* Bottom nav (logout, settings) */
+.bottom-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #718096;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.bottom-nav a:hover {
+    background: #f0f0f0;
+}
+
+.bottom-nav .logout {
+    color: #e53e3e;
+}

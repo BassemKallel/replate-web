@@ -1,11 +1,18 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { Header } from '../header/header';
+import { Sidenav } from '../sidenav/sidenav';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [],
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    Header,
+    Sidenav
+  ],
   templateUrl: './main-layout.html',
-  styleUrl: './main-layout.css',
+  styleUrls: [] // Nous ajouterons le CSS à l'étape 3
 })
-export class MainLayout {
-
+export class MainLayoutComponent {
 }

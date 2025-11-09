@@ -1,1 +1,60 @@
-<p>sidenav works!</p>
+<aside
+    class="fixed left-0 top-0 h-full bg-white shadow-md flex flex-col items-center w-56 transition-all duration-300 overflow-hidden">
+    <div class="logo-section">
+        <div class="logo"></div>
+        <div class="logo-text">
+            <h1>Replate</h1>
+            <p>Dashboard</p>
+        </div>
+    </div>
+
+    <nav class="flex-1 w-full">
+        <ul class="space-y-2 px-3">
+
+            <ng-container *ngFor="let item of menuItems">
+
+                <li *ngIf="!item.children">
+                    <a [routerLink]="item.link" routerLinkActive="active"
+                        class="flex items-center gap-3 text-gray-600 hover:bg-gray-100 hover:text-[#FDBF60] transition rounded-lg px-3 py-3">
+                        <i [class]="item.icon + ' text-lg'"></i>
+                        <span class="transition-opacity duration-300">{{ item.label }}</span>
+                    </a>
+                </li>
+
+                <li *ngIf="item.children" class="relative">
+                    <button (click)="toggleAnnouncementsMenu()"
+                        class="flex items-center justify-between w-full gap-3 text-gray-600 hover:bg-gray-100 hover:text-[#FDBF60] transition rounded-lg px-3 py-3">
+                        <div class="flex items-center gap-3">
+                            <i [class]="item.icon + ' text-lg'"></i>
+                            <span class="transition-opacity duration-300">{{ item.label }}</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-sm"></i>
+                    </button>
+
+                    <ul *ngIf="isAnnouncementsOpen" class="ml-8 mt-2 space-y-1">
+                        <li *ngFor="let subItem of item.children">
+                            <a [routerLink]="subItem.link" routerLinkActive="active"
+                                class="flex justify-between px-3 py-2 rounded hover:bg-gray-100">
+                                <span>{{ subItem.label }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+            </ng-container>
+        </ul>
+    </nav>
+
+    <div class="w-full px-3 mb-6 space-y-2">
+        <a href="#"
+            class="flex items-center gap-3 text-gray-600 hover:bg-gray-100 hover:text-[#FDBF60] transition rounded-lg px-3 py-3">
+            <i class="fa-solid fa-gear text-lg"></i>
+            <span class="transition-opacity duration-300">Settings</span>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 text-red-500 hover:bg-red-50 transition rounded-lg px-3 py-3">
+            <i class="fa-solid fa-right-from-bracket text-lg"></i>
+            <span class="transition-opacity duration-300">Logout</span>
+        </a>
+    </div>
+</aside>

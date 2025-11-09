@@ -1,1 +1,12 @@
-<p>main-layout works!</p>
+<div class="main-layout flex h-screen bg-gray-50">
+    <app-sidenav></app-sidenav>
+
+    <div class="content-area flex-1 flex flex-col overflow-y-auto ml-56 transition-all duration-300">
+
+        <app-header></app-header>
+
+        <main class="content p-6 flex-1">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>
