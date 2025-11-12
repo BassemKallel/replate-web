@@ -1,25 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common'; // Requis pour *ngFor
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Menu } from '../../core/services/menu';
-import { AuthService } from '../../core/services/auth'; 
+import { AuthService } from '../../core/services/auth';
 import { MenuItem } from '../../core/models/menuItem.model';
+
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [ CommonModule, RouterLink, RouterLinkActive ],
+  imports: [CommonModule, RouterLink, RouterLinkActive], // CommonModule ajouté
   templateUrl: './sidenav.html',
-  styleUrl: './sidenav.css'
+  styleUrls: ['./sidenav.css'] // Pointeur vers le CSS
 })
 export class Sidenav implements OnInit {
   
   menuItems: MenuItem[] = [];
-  isAnnouncementsOpen = false;
-  // isSidebarHovered = false; // <-- SUPPRIMÉ
+  
+  // Gère l'état d'ouverture des sous-menus (si vous en ajoutez)
+  openSubMenu: string | null = null; 
 
   constructor(
     private menuService: Menu, 
-    private authService: AuthService
+    private authService: AuthService // Pour le bouton Logout
   ) {}
 
   ngOnInit(): void {
@@ -30,9 +32,17 @@ export class Sidenav implements OnInit {
     this.menuItems = this.menuService.getMenuItems();
   }
 
-  toggleAnnouncementsMenu() {
-    this.isAnnouncementsOpen = !this.isAnnouncementsOpen;
+  // Gère les clics sur les menus (pour les sous-menus)
+  toggleSubMenu(label: string) {
+    if (this.openSubMenu === label) {
+      this.openSubMenu = null;
+    } else {
+      this.openSubMenu = label;
+    }
   }
 
-  // onSidebarHover(hovered: boolean) { ... } // <-- SUPPRIMÉ
+  // Appelle le service de déconnexion
+  logout(): void {
+    this.authService.logout();
+  }
 }

@@ -1,0 +1,72 @@
+<!-- 
+  Design basé sur "Code A" [cite: belgaiedaziz/replate-web-sp1/replate-web-sp1-f474f4bbbeadb80d5da2cec7ca8b680da4927b81/src/app/features/merchant/announcement-list/announcement-list.component.html] 
+  rendu dynamique.
+-->
+<div class="content p-6">
+    <!-- En-tête -->
+    <div class="content-header">
+        <div>
+            <h2>Toutes vos Annonces</h2>
+            <p class="status">Gérez, modifiez ou supprimez vos annonces.</p>
+        </div>
+        <div class="filters">
+            <!-- Bouton pour RDT-5 -->
+            <button (click)="navigateToCreate()" class="btn-create">
+                <i class="fa-solid fa-plus mr-2"></i>
+                Créer une annonce
+            </button>
+        </div>
+    </div>
+
+    <!-- Conteneur de la liste -->
+    <div class="list-container" *ngIf="announcements$ | async as announcements; else loading">
+
+        <!-- État vide -->
+        <div *ngIf="announcements.length === 0" class="empty-state">
+            <i class="fa-solid fa-bullhorn fa-3x text-gray-400 mb-4"></i>
+            <h3 class="text-xl font-semibold">Aucune annonce</h3>
+            <p class="text-gray-500">Commencez par créer votre première annonce.</p>
+        </div>
+
+        <!-- Grille des annonces -->
+        <div class="announcement-grid" *ngIf="announcements.length > 0">
+            <div *ngFor="let ann of announcements" class="announcement-card" (click)="navigateToDetail(ann.id)">
+
+                <!-- Image -->
+                <div class="card-image">
+                    <!-- Construit l'URL de l'image -->
+                    <img [src]="baseUrl + '/files/announcements/' + ann.imageUrl" alt="Photo de l'annonce"
+                        (error)="$event.target.src='https://placehold.co/600x400/FFF8E1/EAC464?text=Image'">
+                </div>
+
+                <!-- Contenu -->
+                <div class="card-content">
+                    <h3 class="font-bold text-lg truncate">{{ ann.title }}</h3>
+                    <p class="text-sm text-gray-500">{{ ann.foodType }}</p>
+                    <p class="text-sm text-gray-500">Quantité: {{ ann.quantity }}</p>
+                </div>
+
+                <!-- Statut (Badge) -->
+                <div class="card-footer">
+                    <span class="status-badge" [ngClass]="{
+            'status-pending': ann.moderationStatus === 'PENDING_REVIEW',
+            'status-approved': ann.moderationStatus === 'APPROVED',
+            'status-rejected': ann.moderationStatus === 'REJECTED'
+          }">
+                        <!-- Utilise TitleCasePipe pour un affichage propre -->
+                        {{ (ann.moderationStatus | titlecase).replace('_', ' ') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <ng-template #loading>
+        <div class="empty-state">
+            <i class="fa-solid fa-spinner fa-spin fa-3x text-gray-400 mb-4"></i>
+            <h3 class="text-xl font-semibold">Chargement des annonces...</h3>
+        </div>
+    </ng-template>
+
+</div>

@@ -2,5 +2,5 @@ export interface MenuItem {
     label: string;
     icon: string;
     link: string;
-    children?: MenuItem[]; // <-- Propriété essentielle pour les sous-menus
+    children?: MenuItem[]; // Pour les sous-menus
 }

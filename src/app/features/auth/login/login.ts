@@ -1,28 +1,30 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrls: ['./login.css']
+  styleUrls: ['./login.css'],
 })
-export class LoginComponent {
-  loginForm: FormGroup;
-  isLoading = false;
+export class LoginComponent implements OnInit {
+  loginForm!: FormGroup;
+  errorMessage: string | null = null;
+  isLoading = false; // <-- 1. AJOUTEZ CETTE LIGNE
 
   constructor(
-    private fb: FormBuilder, 
-    private authService: AuthService,
-    private router: Router
-  ) {
+    private fb: FormBuilder,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', Validators.required],
     });
   }
 
@@ -30,27 +32,19 @@ export class LoginComponent {
     if (this.loginForm.invalid) {
       return;
     }
-    
-    this.isLoading = true;
-    const { email, password } = this.loginForm.value;
 
-    this.authService.login(email!, password!).subscribe({
-      next: (user) => {
-        this.isLoading = false;
-        alert('Connexion réussie !');
-        
-        // Rediriger en fonction du rôle
-        if (user.role === 'admin') {
-          this.router.navigate(['/admin']);
-        } else if (user.role === 'merchant') {
-          this.router.navigate(['/merchant']);
-        } else {
-          this.router.navigate(['/']); // Page par défaut
-        }
+    this.errorMessage = null;
+    this.isLoading = true; // <-- 2. METTEZ À JOUR L'ÉTAT
+
+    this.authService.login(this.loginForm.value).subscribe({
+      next: () => {
+        this.isLoading = false; // <-- 3. METTEZ À JOUR L'ÉTAT
+        // La redirection est gérée par le service
       },
       error: (err) => {
-        this.isLoading = false;
-        alert(err.message || 'Une erreur est survenue');
+        this.isLoading = false; // <-- 4. METTEZ À JOUR L'ÉTAT
+        console.error('Erreur de connexion', err);
+        this.errorMessage = 'Email ou mot de passe incorrect.';
       }
     });
   }

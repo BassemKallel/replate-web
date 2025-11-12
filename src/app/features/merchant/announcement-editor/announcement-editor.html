@@ -1,0 +1,101 @@
+<!-- 
+  Design basé sur "Code A" [cite: belgaiedaziz/replate-web-sp1/replate-web-sp1-f474f4bbbeadb80d5da2cec7ca8b680da4927b81/src/app/features/merchant/announcement-form/announcement-form.component.html] 
+  connecté à ReactiveForms.
+-->
+<div class="create-announcement">
+    <!-- Titre dynamique (RDT-5 ou RDT-6) -->
+    <div class="header">
+        <h2 *ngIf="!editId">Créer une Nouvelle Annonce</h2>
+        <h2 *ngIf="editId">Modifier l'Annonce</h2>
+        <p>Remplissez les détails de la nourriture que vous souhaitez donner ou vendre.</p>
+    </div>
+
+    <form class="announcement-form" [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
+
+        <!-- Titre -->
+        <div class="form-group span-2">
+            <label for="title">Titre de l'annonce</label>
+            <input id="title" type="text" placeholder="Ex: Pains au chocolat invendus" formControlName="title" />
+        </div>
+
+        <!-- Type (Don/Vente) -->
+        <div class="form-group">
+            <label for="type">Type d'annonce</label>
+            <select id="type" formControlName="type">
+                <option *ngFor="let t of types" [value]="t">{{ t | titlecase }}</option>
+            </select>
+        </div>
+
+        <!-- Catégorie -->
+        <div class="form-group">
+            <label for="foodType">Catégorie</label>
+            <select id="foodType" formControlName="foodType">
+                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+            </select>
+        </div>
+
+        <!-- Quantité -->
+        <div class="form-group">
+            <label for="quantity">Quantité (ex: 5 kg, 10 pièces)</label>
+            <input id="quantity" type="number" formControlName="quantity" />
+        </div>
+
+        <!-- Date d'expiration -->
+        <div class="form-group">
+            <label for="expiryDate">Date d'expiration</label>
+            <!-- Le backend attend "yyyy-MM-dd" [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/payload/AnnouncementRequest.java] -->
+            <input id="expiryDate" type="date" formControlName="expiryDate" />
+        </div>
+
+        <!-- Date de collecte -->
+        <div class="form-group">
+            <label for="pickupTime">Date et heure de collecte</label>
+            <!-- Le backend attend un format ISO [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/payload/AnnouncementRequest.java] -->
+            <input id="pickupTime" type="datetime-local" formControlName="pickupTime" />
+        </div>
+
+        <!-- Adresse -->
+        <div class="form-group">
+            <label for="address">Adresse de collecte</label>
+            <input id="address" type="text" placeholder="123 Rue de Test, Tunis" formControlName="address" />
+        </div>
+
+        <!-- Image -->
+        <div class="form-group span-2">
+            <label for="imageFile">Image de l'annonce</label>
+            <input id="imageFile" type="file" (change)="onFileSelected($event)" class="file-input-hidden"
+                accept="image/png, image/jpeg" />
+            <label for="imageFile" class="upload-btn">
+                <i class="fa-solid fa-upload"></i>
+                <span *ngIf="!imageFileName">Choisir une image</span>
+                <span *ngIf="imageFileName" class="truncate" [title]="imageFileName">{{ imageFileName }}</span>
+            </label>
+            <small *ngIf="editId && !selectedFile" class="text-gray-500 mt-1">
+                Laissez vide pour conserver l'image actuelle ({{ imageFileName }})
+            </small>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group span-2">
+            <label for="description">Description</label>
+            <textarea id="description" rows="4" placeholder="Description détaillée de l'annonce..."
+                formControlName="description"></textarea>
+        </div>
+
+        <!-- Erreurs -->
+        <div *ngIf="errorMessage" class="error-message span-2">
+            {{ errorMessage }}
+        </div>
+
+        <!-- Boutons -->
+        <div class="form-actions span-2">
+            <button type="button" class="btn-cancel" (click)="onCancel()">Annuler</button>
+            <button type="submit" class="btn-submit" [disabled]="announcementForm.invalid || isLoading">
+                <span *ngIf="!isLoading && !editId">Créer l'annonce</span>
+                <span *ngIf="!isLoading && editId">Mettre à jour</span>
+                <span *ngIf="isLoading">En cours...</span>
+            </button>
+        </div>
+
+    </form>
+</div>

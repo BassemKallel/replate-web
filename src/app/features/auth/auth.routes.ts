@@ -1,10 +1,22 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login';
-import { RegisterComponent } from './register/register';
-
-
+import { Register } from './register/register';
+import { $locationShim } from '@angular/common/upgrade';
+import { publicGuard } from '../../core/guards/publicGuard';
 export const AUTH_ROUTES: Routes = [
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
-    { path: '', redirectTo: 'login', pathMatch: 'full' }
+  { 
+    path: 'login', 
+    component: LoginComponent,
+    canActivate: [publicGuard] // <-- 2. Appliquer le guard
+  },
+  { 
+    path: 'register', 
+    component: Register,
+    canActivate: [publicGuard] // <-- 3. Appliquer le guard
+  },
+  { 
+    path: '', 
+    redirectTo: 'login', 
+    pathMatch: 'full' 
+  },
 ];

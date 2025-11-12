@@ -1,0 +1,175 @@
+/* Styles de "Code A" pour le layout de détail [cite: belgaiedaziz/replate-web-sp1/replate-web-sp1-f474f4bbbeadb80d5da2cec7ca8b680da4927b81/src/app/features/merchant/announcement-info/announcement-info.component.css] */
+.content {
+    padding: 24px;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.content-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    max-width: 60%;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status {
+    color: #6B7280;
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.action-btn {
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-reject {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+.btn-reject:hover {
+    background-color: #FECACA;
+}
+
+.btn-edit {
+    background-color: #E5E7EB;
+    color: #1C1C1E;
+}
+
+.btn-edit:hover {
+    background-color: #D1D5DB;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.announcement-details {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.main-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    background-color: #f9fafb;
+}
+
+.announcement-details h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.description {
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.info-item,
+.info-item-full {
+    background-color: #f9fafb;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.info-item span,
+.info-item-full span {
+    display: block;
+    font-size: 0.8rem;
+    color: #6B7280;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.info-item strong,
+.info-item-full strong {
+    font-weight: 600;
+    color: #1C1C1E;
+}
+
+.info-item-full {
+    grid-column: span 2;
+}
+
+.offers-list {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    align-self: start;
+    /* S'arrête en haut */
+}
+
+.offers-list h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.offer-card-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #6B7280;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}

@@ -1,69 +1,39 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth'; // <-- Importez AuthService
-import { MenuItem } from '../models/menuItem.model'; 
-
+import { AuthService } from './auth'; // Importé
+import { MenuItem } from '../models/menuItem.model';
 @Injectable({
   providedIn: 'root',
 })
 export class Menu {
 
-  constructor(private authService: AuthService) {} // <-- Injectez AuthService
+  constructor(private authService: AuthService) { } // Injecté
 
-  // Défini en s'inspirant du HTML de Code A
+  // Listes de menus basées sur le design de "Code A"
+  // [cite: belgaiedaziz/replate-web-sp1/replate-web-sp1-f474f4bbbeadb80d5da2cec7ca8b680da4927b81/src/app/layout/sidenav/sidenav.component.html]
+
   private adminMenuItems: MenuItem[] = [
-    { label: 'Overview', icon: 'fa-solid fa-chart-pie', link: '/admin/overview' },
-    { 
-      label: 'Users', 
-      icon: 'fa-solid fa-users', 
-      link: '#', // Lien parent
-      children: [
-        { label: 'All users', icon: '', link: '/admin/validate-accounts' },
-        { label: 'Associations', icon: '', link: '/admin/associations' },
-        { label: 'Merchants', icon: '', link: '/admin/merchants' },
-      ]
-    },
-    { 
-      label: 'Announcements', 
-      icon: 'fa-solid fa-bullhorn', 
-      link: '#',
-      children: [
-        { label: 'All Announcements', icon: '', link: '/admin/announcements' }
-      ]
-    }
+    { label: 'Validation Comptes', icon: 'fa-solid fa-user-check', link: '/admin/validate-accounts' },
+    // (Ajoutez d'autres routes admin ici, ex: /admin/donations)
   ];
 
   private merchantMenuItems: MenuItem[] = [
-    { label: 'Overview', icon: 'fa-solid fa-chart-pie', link: '/merchant/overview' },
-    { 
-      label: 'Announcements', 
-      icon: 'fa-solid fa-bullhorn', 
-      link: '#',
-      children: [
-        { label: 'Create New', icon: '', link: '/merchant/announcement-form' },
-        { label: 'All Announcements', icon: '', link: '/merchant/announcement-list' }
-      ]
-    },
-    { label: 'Transactions', icon: 'fa-solid fa-credit-card', link: '/merchant/transactions' },
-    { label: 'Impact', icon: 'fa-solid fa-leaf', link: '/merchant/impact' },
-    { label: 'Reports', icon: 'fa-solid fa-file-lines', link: '/merchant/reports' },
+    { label: 'Mes Annonces', icon: 'fa-solid fa-bullhorn', link: '/merchant/my-announcements' },
+    { label: 'Créer Annonce', icon: 'fa-solid fa-plus', link: '/merchant/announcement-editor' },
+    // (Ajoutez d'autres routes merchant ici, ex: /merchant/profile)
   ];
 
   /**
    * Retourne la liste de menus en fonction du rôle de l'utilisateur.
    */
   getMenuItems(): MenuItem[] {
-    // Obtenez le rôle actuel depuis votre service d'authentification.
-    // Adaptez "getRole()" à la méthode réelle de votre AuthService.
-    const role = this.authService.getCurrentUserRole(); // EXEMPLE
+    const role = this.authService.getCurrentUserRole(); // 'ADMIN' ou 'MERCHANT'
 
     if (role === 'ADMIN') {
       return this.adminMenuItems;
-    } else if (role === 'MERCHANT') {
+    } else if (role === 'MERCHANT' || role === 'ASSOCIATION') {
       return this.merchantMenuItems;
     }
-    
-    // Par défaut (ex: si non connecté ou rôle inconnu)
-    // Vous pouvez choisir de retourner un menu vide ou le menu admin par défaut
-    return this.adminMenuItems; // ou []
+
+    return []; // Retourne un menu vide si non connecté ou rôle inconnu
   }
 }

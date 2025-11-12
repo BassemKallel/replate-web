@@ -1,6 +1,15 @@
+<!-- 
+  Design de "Code A" [cite: belgaiedaziz/replate-web-sp1/replate-web-sp1-f474f4bbbeadb80d5da2cec7ca8b680da4927b81/src/app/layout/main-layout/main-layout.component.html]
+  Modifié pour une sidebar fixe
+-->
 <div class="main-layout flex h-screen bg-gray-50">
+
     <app-sidenav></app-sidenav>
 
+    <!-- 
+    CORRECTION : 'ml-56' (224px) correspond à la largeur de la sidebar fixe.
+    Suppression de 'ml-20', 'group-hover:ml-56'
+  -->
     <div class="content-area flex-1 flex flex-col overflow-y-auto ml-56 transition-all duration-300">
 
         <app-header></app-header>

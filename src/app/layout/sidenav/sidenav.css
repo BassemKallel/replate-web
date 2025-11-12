@@ -1,33 +1,15 @@
-/* ─── Sidebar ───────────────────────────────────────────── */
-.sidebar {
-    width: 70px;
-    background: #fff;
-    border-right: 1px solid #e2e8f0;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+/* Styles de "Code A" [cite: belgaiedaziz/replate-web-sp1/replate-web-sp1-f474f4bbbeadb80d5da2cec7ca8b680da4927b81/src/app/layout/sidenav/sidenav.component.css] */
+/* Modifié pour être FIXE (suppression de :hover) */
 
-.sidebar:hover {
-    width: 230px;
-}
-
-/* Logo section */
 .logo-section {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px 0;
-    transition: all 0.3s ease;
+    justify-content: flex-start;
+    /* Toujours aligné à gauche */
+    padding: 20px;
+    /* Padding fixe */
     flex-shrink: 0;
     position: relative;
-}
-
-.sidebar:hover .logo-section {
-    justify-content: flex-start;
-    padding-left: 20px;
 }
 
 .logo {
@@ -36,56 +18,30 @@
     background: #FDBF60;
     border-radius: 10px;
     flex-shrink: 0;
-    transition: all 0.3s ease;
 }
 
 .logo-text {
-    opacity: 0;
-    width: 0;
-    overflow: hidden;
+    opacity: 1;
+    /* Toujours visible */
     white-space: nowrap;
-    transition: all 0.3s ease;
-    margin-left: 0;
+    margin-left: 12px;
+    /* Marge fixe */
 }
 
 .logo-section h1 {
     font-size: 18px;
     font-weight: 700;
     color: #2d3748;
+    margin: 0;
 }
 
 .logo-section p {
     font-size: 12px;
     color: #a0aec0;
-}
-
-.logo-section h1,
-.logo-section p {
-    opacity: 0;
-    width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
     margin: 0;
 }
 
-
-.sidebar:hover .logo-section h1,
-.sidebar:hover .logo-section p {
-    opacity: 1;
-    width: auto;
-    margin-left: 12px;
-
-}
-
-
-
-.nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
+/* Style des liens de navigation */
 .nav a {
     display: flex;
     align-items: center;
@@ -104,15 +60,7 @@
     color: #FDBF60;
 }
 
-.nav li {
-    margin-bottom: 8px;
-}
-
-.nav a:hover {
-    background: #f0f0f0;
-}
-
-/* Bottom nav (logout, settings) */
+/* Style du bouton de déconnexion */
 .bottom-nav a {
     display: flex;
     align-items: center;
@@ -131,4 +79,165 @@
 
 .bottom-nav .logout {
     color: #e53e3e;
+}
+
+/* Utilitaires pour Tailwind (au cas où) */
+.flex {
+    display: flex;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.w-56 {
+    width: 14rem;
+}
+
+/* 224px */
+.fixed {
+    position: fixed;
+}
+
+.top-0 {
+    top: 0;
+}
+
+.left-0 {
+    left: 0;
+}
+
+.bg-white {
+    background-color: #fff;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.items-center {
+    align-items: center;
+}
+
+.transition-all {
+    transition-property: all;
+}
+
+.duration-300 {
+    transition-duration: 300ms;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.space-y-2> :not([hidden])~ :not([hidden]) {
+    margin-top: 0.5rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.w-5 {
+    width: 1.25rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.gap-3 {
+    gap: 0.75rem;
+}
+
+.text-gray-600 {
+    color: #4b5563;
+}
+
+.hover\:bg-gray-100:hover {
+    background-color: #f3f4f6;
+}
+
+.hover\:text-\[\#FDBF60\]:hover {
+    color: #FDBF60;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.relative {
+    position: relative;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.transition-transform {
+    transition-property: transform;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.ml-8 {
+    margin-left: 2rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.space-y-1> :not([hidden])~ :not([hidden]) {
+    margin-top: 0.25rem;
+}
+
+.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.text-red-500 {
+    color: #ef4444;
+}
+
+.hover\:bg-red-50:hover {
+    background-color: #fef2f2;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

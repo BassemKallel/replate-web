@@ -1,0 +1,176 @@
+/* Styles pour le formulaire d'annonce (basé sur Code A) [cite: belgaiedaziz/replate-web-sp1/replate-web-sp1-f474f4bbbeadb80d5da2cec7ca8b680da4927b81/src/app/features/merchant/announcement-form/announcement-form.component.css] */
+.create-announcement {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1C1C1E;
+    margin-bottom: 0.25rem;
+}
+
+.header p {
+    color: #6B7280;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.announcement-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Applique à span-2 */
+.span-2 {
+    grid-column: span 2 / span 2;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: #1C1C1E;
+}
+
+input,
+select,
+textarea {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 0.75rem;
+    background-color: #F9FAFB;
+    transition: border 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    /* S'assure que le padding n'augmente pas la largeur */
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #EAC464;
+    /* Couleur principale */
+    outline: none;
+    box-shadow: 0 0 0 2px #f5e4b5;
+}
+
+textarea {
+    font-family: inherit;
+    resize: vertical;
+}
+
+/* Style pour l'upload de fichier */
+.file-input-hidden {
+    display: none;
+}
+
+.upload-btn {
+    border: 1px solid #E5E7EB;
+    background-color: #F9FAFB;
+    color: #1c1c1e;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.upload-btn i {
+    color: #6B7280;
+}
+
+.upload-btn .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Boutons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-cancel,
+.btn-submit {
+    padding: 0.7rem 2rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel {
+    background-color: #E5E7EB;
+    color: #1C1C1E;
+}
+
+.btn-cancel:hover {
+    background-color: #D1D5DB;
+}
+
+.btn-submit {
+    background-color: #EAC464;
+    /* Couleur principale */
+    color: #1C1C1E;
+}
+
+.btn-submit:hover {
+    background-color: #f3d98c;
+}
+
+.btn-submit:disabled {
+    background-color: #E5E7EB;
+    color: #9CA3AF;
+    cursor: not-allowed;
+}
+
+/* Message d'erreur */
+.error-message {
+    color: #ef4444;
+    /* Rouge */
+    background-color: #fee2e2;
+    /* Rouge léger */
+    border: 1px solid #fca5a5;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Media query pour les petits écrans */
+@media (max-width: 768px) {
+    .announcement-form {
+        grid-template-columns: 1fr;
+    }
+
+    .span-2 {
+        grid-column: span 1 / span 1;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+}

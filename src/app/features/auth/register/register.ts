@@ -1,126 +1,171 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth';
-import { UserRole } from '../../../core/models/user.model'; // Importez votre modèle
+import { ERole } from '../../../core/models/user.model'; // Importe l'enum des rôles
+
+// Validateur personnalisé pour vérifier que les mots de passe correspondent
+export function passwordMismatchValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password');
+  const confirmPassword = control.get('confirmPassword');
+  
+  if (password && confirmPassword && password.value !== confirmPassword.value) {
+    return { mismatch: true }; // Erreur si les MDP ne correspondent pas
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './register.html',
-  styleUrls: ['./register.css']
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  templateUrl: './register.html', 
+  styleUrls: ['./register.css'] 
 })
-export class RegisterComponent {
-  registerForm: FormGroup;
-  userType: UserRole = 'beneficiary'; 
-  isLoading = false;
+export class Register implements OnInit {
+  registerForm!: FormGroup;
+  // Le type par défaut correspond à l'enum MAJUSCULE
+  userType: ERole = ERole.BENEFICIARY; 
   
-  // Noms des fichiers pour l'aperçu
   profilePicFilename: string | null = null;
   verificationDocFilename: string | null = null;
+  private profileImageFile: File | null = null;
+  private verificationDocumentFile: File | null = null;
+
+  isLoading = false;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(
-    private fb: FormBuilder, 
-    private authService: AuthService, 
+    private fb: FormBuilder,
+    private authService: AuthService,
     private router: Router
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    // Initialise le formulaire
     this.registerForm = this.fb.group({
-      // Individual (beneficiary)
+      // Champs de 'beneficiary'
       fullName: [''],
-      // Association & Merchant
+      // Champs de 'merchant' / 'association'
       orgName: [''],
-      regNumber: [''],
-      // Commun
+      // 'regNumber' a été supprimé
+      
+      // Champs communs
       email: ['', [Validators.required, Validators.email]],
       location: ['', Validators.required],
       phone: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
-      // Pour les fichiers
-      profilePic: [null],
-      verificationDoc: [null]
-    }, { validators: this.passwordMatchValidator });
+    }, { validators: passwordMismatchValidator }); 
 
-    // Appliquer les validateurs par défaut au démarrage
-    this.switchType(this.userType);
+    // Applique les validateurs pour le type par défaut
+    this.switchType(ERole.BENEFICIARY);
   }
 
-  // Validateur personnalisé pour vérifier que les mots de passe correspondent
-  passwordMatchValidator(control: AbstractControl) {
-    return control.get('password')?.value === control.get('confirmPassword')?.value
-      ? null : { mismatch: true };
-  }
-
-  // Changement de type d'utilisateur (maintenant 3 types)
-  switchType(type: UserRole) {
-    this.userType = type;
+  /**
+   * Change le type d'utilisateur et ajuste les validateurs du formulaire.
+   */
+  switchType(type: ERole | string) {
+    this.userType = type as ERole;
+    const fullNameControl = this.registerForm.get('fullName');
+    const orgNameControl = this.registerForm.get('orgName');
     
-    // Réinitialiser les validateurs
-    this.registerForm.get('fullName')?.clearValidators();
-    this.registerForm.get('orgName')?.clearValidators();
-    this.registerForm.get('regNumber')?.clearValidators();
+    // 'regNumberControl' a été supprimé
 
-    // Appliquer les validateurs pour le type sélectionné
-    if (type === 'beneficiary') { // 'Individual'
-      this.registerForm.get('fullName')?.setValidators([Validators.required]);
-    } else if (type === 'association' || type === 'merchant') {
-      this.registerForm.get('orgName')?.setValidators([Validators.required]);
-      this.registerForm.get('regNumber')?.setValidators([Validators.required]);
+    // Réinitialise tous les validateurs de nom/orga
+    fullNameControl?.clearValidators();
+    orgNameControl?.clearValidators();
+
+    // Applique les validateurs requis en fonction du rôle
+    if (this.userType === ERole.BENEFICIARY) {
+      fullNameControl?.setValidators([Validators.required]);
+    } else { // Merchant ou Association
+      orgNameControl?.setValidators([Validators.required]);
     }
 
-    // Mettre à jour la validité des champs
-    this.registerForm.get('fullName')?.updateValueAndValidity();
-    this.registerForm.get('orgName')?.updateValueAndValidity();
-    this.registerForm.get('regNumber')?.updateValueAndValidity();
+    // Met à jour la validité
+    fullNameControl?.updateValueAndValidity();
+    orgNameControl?.updateValueAndValidity();
   }
 
-  // Gère la sélection d'un fichier
-  onFileChange(event: any, fieldName: 'profilePic' | 'verificationDoc') {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.registerForm.patchValue({ [fieldName]: file });
+  /**
+   * Stocke les fichiers lorsqu'ils sont sélectionnés
+   */
+  onFileChange(event: Event, fieldName: string): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      
       if (fieldName === 'profilePic') {
         this.profilePicFilename = file.name;
-      } else {
+        this.profileImageFile = file; // Stocke le fichier
+      } else if (fieldName === 'verificationDoc') {
         this.verificationDocFilename = file.name;
+        this.verificationDocumentFile = file; // Stocke le fichier
       }
     }
   }
 
+  /**
+   * (RDT-3) Construit le FormData et l'envoie au service
+   */
   onSubmit() {
+    this.errorMessage = null;
+    this.successMessage = null;
+
     if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
+      this.errorMessage = "Veuillez corriger les erreurs dans le formulaire.";
       return;
     }
+    
+    // Fichiers requis pour Merchant/Association
+    if (this.userType !== ERole.BENEFICIARY && (!this.profileImageFile || !this.verificationDocumentFile)) {
+       this.errorMessage = "L'image de profil et le document de vérification sont requis.";
+       return;
+    }
+    
     this.isLoading = true;
+    const formData = new FormData();
     
-    const formData = this.registerForm.value;
+    // Mappe les champs du formulaire vers les champs du backend [cite: Replate Backend (Simplifié)]
+    if (this.userType === ERole.BENEFICIARY) {
+      formData.append('name', this.registerForm.get('fullName')?.value);
+    } else {
+      formData.append('name', this.registerForm.get('orgName')?.value);
+    }
     
-    // Note: Pour un vrai backend, vous utiliseriez FormData ici
-    // pour envoyer les fichiers. Pour le mock server, nous n'envoyons que les noms.
+    formData.append('email', this.registerForm.get('email')?.value);
+    formData.append('password', this.registerForm.get('password')?.value);
+    formData.append('phone', this.registerForm.get('phone')?.value);
+    formData.append('address', this.registerForm.get('location')?.value);
     
-    const userData = {
-      name: (this.userType === 'beneficiary') ? formData.fullName : formData.orgName,
-      email: formData.email,
-      password: formData.password,
-      location: formData.location,
-      phone: formData.phone,
-      role: this.userType,
-      status: 'pending', // RDT-4: Tous les comptes sont en attente de validation
-      ...(this.userType !== 'beneficiary' && { regNumber: formData.regNumber })
-    };
+    // 'userType' est en MAJUSCULES (ex: 'BENEFICIARY')
+    // Le backend attend des minuscules (ex: 'beneficiary') [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/AuthController.java]
+    formData.append('role', this.userType.toLowerCase()); 
 
-    this.authService.register(userData).subscribe({
-      next: () => {
+    if (this.profileImageFile) {
+      formData.append('profileImage', this.profileImageFile);
+    }
+    if (this.verificationDocumentFile) {
+      formData.append('verificationDocument', this.verificationDocumentFile);
+    }
+
+    // Appelle le service (qui attend du 'text') [cite: Service d'Authentification:src/app/core/services/auth.ts]
+    this.authService.register(formData).subscribe({
+      next: (responseString: string) => {
         this.isLoading = false;
-        // L'alerte et la redirection sont gérées dans le service
+        this.successMessage = responseString; // "Inscription réussie!..."
+        setTimeout(() => {
+          this.router.navigate(['/auth/login']); // Redirige vers le login
+        }, 2000);
       },
       error: (err) => {
         this.isLoading = false;
-        alert('Erreur lors de l\'inscription. Veuillez réessayer.');
-        console.error(err);
+        console.error('Erreur d\'inscription', err);
+        // Affiche le message d'erreur du backend (ex: "Erreur: Rôle non supporté!")
+        this.errorMessage = err.error || "Une erreur est survenue.";
       }
     });
   }

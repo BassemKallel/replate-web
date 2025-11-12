@@ -1,0 +1,91 @@
+<div class="content p-6" *ngIf="announcement$ | async as ann; else loading">
+
+    <!-- En-tête -->
+    <div class="content-header">
+        <div>
+            <h2 class="truncate">{{ ann.title }}</h2>
+            <p class="status">Détails de l'annonce et offres reçues.</p>
+        </div>
+        <div class="actions">
+            <!-- Bouton RDT-7 (Delete) -->
+            <button (click)="onDelete(ann.id)" class="action-btn btn-reject">
+                <i class="fa-solid fa-trash text-sm"></i> Supprimer
+            </button>
+            <!-- Bouton RDT-6 (Edit) -->
+            <button (click)="onEdit(ann.id)" class="action-btn btn-edit">
+                <i class="fa-solid fa-pen text-sm"></i> Modifier
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <div class="main-content">
+
+        <!-- Colonne de Gauche (Détails) -->
+        <div class="announcement-details">
+            <!-- Image -->
+            <img [src]="baseUrl + '/files/announcements/' + ann.imageUrl" alt="Photo de l'annonce" class="main-image"
+                (error)="$event.target.src='https://placehold.co/600x400/FFF8E1/EAC464?text=Image'">
+
+            <!-- Infos -->
+            <h3>Détails</h3>
+            <p class="description">{{ ann.description }}</p>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span>Statut</span>
+                    <strong>{{ (ann.moderationStatus | titlecase).replace('_', ' ') }}</strong>
+                </div>
+                <div class="info-item">
+                    <span>Type</span>
+                    <strong>{{ ann.type | titlecase }}</strong>
+                </div>
+                <div class="info-item">
+                    <span>Quantité</span>
+                    <strong>{{ ann.quantity }}</strong>
+                </div>
+                <div class="info-item">
+                    <span>Catégorie</span>
+                    <strong>{{ ann.foodType }}</strong>
+                </div>
+                <div class="info-item">
+                    <span>Expire le</span>
+                    <strong>{{ ann.expiryDate | date:'dd/MM/yyyy' }}</strong>
+                </div>
+                <div class="info-item">
+                    <span>À récupérer le</span>
+                    <strong>{{ ann.pickupTime | date:'dd/MM/yyyy à HH:mm' }}</strong>
+                </div>
+            </div>
+
+            <div class="info-item-full">
+                <span>Adresse de collecte</span>
+                <strong>{{ ann.address }}</strong>
+            </div>
+        </div>
+
+        <!-- Colonne de Droite (Offres) -->
+        <div class="offers-list">
+            <h3>Offres Reçues ({{ ann.offers?.length || 0 }})</h3>
+
+            <!-- État vide (si 'offers' n'est pas implémenté) -->
+            <div *ngIf="!ann.offers || ann.offers.length === 0" class="offer-card-empty">
+                <i class="fa-solid fa-inbox fa-2x text-gray-400 mb-3"></i>
+                Aucune offre pour le moment.
+            </div>
+
+            <!-- Liste des offres (si implémenté) -->
+            <div *ngFor="let offer of ann.offers" class="offer-card">
+                <!-- ... (Logique pour afficher les offres) ... -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #loading>
+    <div class="text-center p-8">
+        <i class="fa-solid fa-spinner fa-spin fa-2x text-gray-400"></i>
+        <p>Chargement des détails...</p>
+    </div>
+</ng-template>
