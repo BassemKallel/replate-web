@@ -16,11 +16,10 @@ export class ValidateAccounts implements OnInit {
   approvedUsers: User[] = [];
   rejectedUsers: User[] = [];
 
-  // État de la boîte de dialogue (amélioré)
   isDialogOpen = false;
   selectedDocumentUrl: string | null = null;
   selectedDocumentName: string | null = null;
-  isDocumentImage = false; // <-- NOUVEAU: pour gérer l'aperçu
+  isDocumentImage = false;
 
   constructor(private authService: AuthService) { }
 
@@ -29,15 +28,15 @@ export class ValidateAccounts implements OnInit {
   }
 
   loadUsers(): void {
-    this.authService.getUsersForValidation().subscribe(users => {
+    this.authService.getUsersForValidation().subscribe((users: User[]) => {
       this.pendingUsers = users;
     });
   }
 
   handleApprove(userToApprove: User): void {
-    this.authService.approveUser(userToApprove.id).subscribe(approvedUser => {
+    this.authService.approveUser(userToApprove.id).subscribe(() => {
       this.pendingUsers = this.pendingUsers.filter(u => u.id !== userToApprove.id);
-      this.approvedUsers.push({ ...userToApprove, ...approvedUser });
+      this.approvedUsers.push({ ...userToApprove, status: 'Approved', isValidated: true });
     });
   }
 
@@ -48,32 +47,22 @@ export class ValidateAccounts implements OnInit {
     });
   }
 
-  // --- LOGIQUE DE DIALOGUE AMÉLIORÉE ---
 
   /**
-   * Ouvre la boîte de dialogue pour voir un document.
-   * CORRIGÉ : Accepte l'utilisateur et le type de document pour construire la bonne URL.
+   * CORRIGÉ: N'accepte plus 'docType', seulement 'user'.
+   * Le service authService a déjà mappé 'documentUrl' en 'verificationDocumentUrl'
    */
-  openDocument(user: User, docType: 'profile' | 'verification') {
-    let filename: string | undefined;
-    let path: string;
-
-    if (docType === 'profile') {
-      filename = user.profileImageUrl;
-      path = 'users'; // [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/FileController.java]
-      this.selectedDocumentName = "Photo de profil";
-    } else {
-      filename = user.verificationDocumentUrl;
-      path = 'verification'; // [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/FileController.java]
-      this.selectedDocumentName = "Document de vérification";
-    }
+  openDocument(user: User) {
+    let filename = user.verificationDocumentUrl;
+    this.selectedDocumentName = "Document de vérification";
 
     if (filename) {
-      // Construit l'URL complète et correcte
-      this.selectedDocumentUrl = `${this.authService.getApiBaseUrl()}/files/${path}/${filename}`;
-      // Vérifie si c'est une image pour l'aperçu
+      // 'filename' est l'URL complète
+      this.selectedDocumentUrl = filename; 
       this.isDocumentImage = this.isImageUrl(filename);
       this.isDialogOpen = true;
+    } else {
+      console.error("Aucun documentUrl trouvé pour cet utilisateur.");
     }
   }
 
@@ -87,8 +76,6 @@ export class ValidateAccounts implements OnInit {
     this.isDocumentImage = false;
   }
 
-  // --- NOUVELLES FONCTIONS HELPERS ---
-
   /**
    * Vérifie si un nom de fichier est une image (pour l'aperçu)
    */
@@ -97,7 +84,7 @@ export class ValidateAccounts implements OnInit {
   }
 
   /**
-   * Retourne la classe d'icône Font Awesome basée sur l'extension du fichier
+   * Retourne la classe d'icône Font Awesome
    */
   getFileIcon(filename: string | undefined): string {
     if (!filename) {

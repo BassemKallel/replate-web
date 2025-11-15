@@ -1,51 +1,73 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, TitleCasePipe } from '@angular/common'; // <-- Pipes
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Announcement } from '../../../core/models/announcement.model';
 import { AnnouncementService } from '../../../core/services/announcement';
-import { AuthService } from '../../../core/services/auth'; // <-- Pour l'URL de base
+import { Announcement } from '../../../core/models/announcement.model';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Router, RouterLink } from '@angular/router'; // CORRIGÉ: Importe Router
+import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 
 @Component({
   selector: 'app-my-announcements',
   standalone: true,
-  imports: [CommonModule, TitleCasePipe], // <-- Pipes
+  // CORRIGÉ: Les imports sont maintenant utilisés
+  imports: [CommonModule, DatePipe, RouterLink, ConfirmDialog, StatusBadge],
   templateUrl: './my-announcements.html',
   styleUrls: ['./my-announcements.css']
 })
-export class MyAnnouncementsComponent implements OnInit {
-
-  public announcements$: Observable<Announcement[]>;
-  public baseUrl: string; // Pour les images
+export class MyAnnouncements implements OnInit {
+  announcements: Announcement[] = [];
+  
+  showDeleteConfirm = false;
+  selectedAnnouncementId: string | null = null;
 
   constructor(
     private announcementService: AnnouncementService,
-    private authService: AuthService,
-    private router: Router
-  ) {
-    this.baseUrl = this.authService.getApiBaseUrl();
-    this.announcements$ = this.announcementService.getMerchantAnnouncements();
-  }
+    private router: Router // CORRIGÉ: Injecte Router
+  ) {}
 
   ngOnInit(): void {
     this.loadAnnouncements();
   }
-
+  
   loadAnnouncements(): void {
-    this.announcements$ = this.announcementService.getMerchantAnnouncements();
+    this.announcementService.getMyAnnouncements().subscribe(data => {
+      this.announcements = data;
+    });
   }
 
-  /**
-   * Navigue vers la page de détail (RDT-6 / RDT-7)
-   */
-  navigateToDetail(id: number): void {
-    this.router.navigate(['/merchant/announcement-detail', id]);
-  }
-
-  /**
-   * Navigue vers la page de création (RDT-5)
-   */
+  // CORRIGÉ: Ajout de la fonction de navigation
   navigateToCreate(): void {
-    this.router.navigate(['/merchant/announcement-editor']);
+    this.router.navigate(['/merchant/create']);
+  }
+
+  // CORRIGÉ: Ajout de la fonction de navigation
+  navigateToDetail(id: string): void {
+    this.router.navigate(['/merchant/announcement', id]);
+  }
+
+  // CORRIGÉ: Ajout d'un helper pour l'image
+  getImageUrl(path: string | undefined): string {
+    if (!path) {
+      return 'assets/images/replate-bg.png'; // Image par défaut
+    }
+    // 'path' est déjà une URL complète du FileService
+    return path;
+  }
+
+  // Gère l'ouverture de la confirmation
+  requestDelete(id: string): void {
+    this.selectedAnnouncementId = id;
+    this.showDeleteConfirm = true;
+  }
+
+  // Gère la fermeture de la boîte de dialogue
+  handleDeleteConfirm(confirmed: boolean): void {
+    if (confirmed && this.selectedAnnouncementId) {
+      this.announcementService.deleteAnnouncement(this.selectedAnnouncementId).subscribe(() => {
+        this.loadAnnouncements(); // Recharge la liste
+      });
+    }
+    this.showDeleteConfirm = false;
+    this.selectedAnnouncementId = null;
   }
 }

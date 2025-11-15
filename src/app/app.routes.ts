@@ -1,69 +1,55 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layout/main-layout/main-layout';
-
-// 1. Importer les nouveaux composants
-
-import { ValidateAccounts } from './features/admin/validate-accounts/validate-accounts';
-import { MyAnnouncementsComponent } from './features/merchant/my-announcements/my-announcements';
-import { AnnouncementEditorComponent } from './features/merchant/announcement-editor/announcement-editor';
-import { AnnouncementDetailComponent } from './features/merchant/announcement-detail/announcement-detail';
-// 2. Importer les guards
 import { authGuard } from './core/guards/auth-guard';
+import { publicGuard } from './core/guards/publicGuard';
 import { roleGuard } from './core/guards/role-guard';
+// CORRIGÉ: Importe 'MyAnnouncements', pas 'MyAnnouncementsComponent'
+import { MyAnnouncements } from './features/merchant/my-announcements/my-announcements';
+// CORRIGÉ: Importe 'AnnouncementDetail', pas 'AnnouncementDetailComponent'
+import { AnnouncementDetail } from './features/merchant/announcement-detail/announcement-detail';
+import { AnnouncementEditorComponent } from './features/merchant/announcement-editor/announcement-editor';
+import { ValidateAccounts } from './features/admin/validate-accounts/validate-accounts';
+import { AnnouncementList } from './features/merchant/announcement-list/announcement-list';
 
 export const routes: Routes = [
-    // --- Routes publiques (Authentification) ---
-    {
-        path: 'auth',
-        loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
-    },
-
-    // --- Routes protégées (Layout Principal) ---
     {
         path: '',
         component: MainLayoutComponent,
-        canActivate: [authGuard], // <-- 1. L'utilisateur doit être connecté
+        canActivate: [authGuard],
         children: [
+            { path: '', redirectTo: 'announcements', pathMatch: 'full' },
+            { path: 'announcements', component: AnnouncementList },
 
-            // --- Routes ADMIN ---
+            // Routes 'Merchant'
             {
-                path: 'admin/validate-accounts',
-                component: ValidateAccounts,
-                canActivate: [roleGuard], // <-- 2. Le rôle doit être 'ADMIN'
-                data: { role: 'ADMIN' }
-            },
-
-            // --- Routes MERCHANT ---
-            {
-                path: 'merchant/my-announcements', // (Read)
-                component: MyAnnouncementsComponent,
+                path: 'merchant',
                 canActivate: [roleGuard],
-                data: { role: 'MERCHANT' } // (ou 'ASSOCIATION')
-            },
-            {
-                path: 'merchant/announcement-editor', // (Create - RDT-5)
-                component: AnnouncementEditorComponent,
-                canActivate: [roleGuard],
-                data: { role: 'MERCHANT' }
-            },
-            {
-                path: 'merchant/announcement-editor/:id', // (Update - RDT-6)
-                component: AnnouncementEditorComponent,
-                canActivate: [roleGuard],
-                data: { role: 'MERCHANT' }
-            },
-            {
-                path: 'merchant/announcement-detail/:id', // (Read Detail / Delete - RDT-7)
-                component: AnnouncementDetailComponent,
-                canActivate: [roleGuard],
-                data: { role: 'MERCHANT' }
+                data: { role: 'MERCHANT' },
+                children: [
+                    // CORRIGÉ: Utilise 'MyAnnouncements'
+                    { path: 'my-announcements', component: MyAnnouncements },
+                    // CORRIGÉ: Utilise 'AnnouncementDetail'
+                    { path: 'announcement/:id', component: AnnouncementDetail },
+                    { path: 'create', component: AnnouncementEditorComponent },
+                    { path: 'edit/:id', component: AnnouncementEditorComponent },
+                ]
             },
 
-            // Redirection par défaut (une fois connecté)
-            { path: '', redirectTo: 'admin/validate-accounts', pathMatch: 'full' },
-        ],
+            // Routes 'Admin'
+            {
+                path: 'admin',
+                canActivate: [roleGuard],
+                data: { role: 'ADMIN' },
+                children: [
+                    { path: 'validate-accounts', component: ValidateAccounts },
+                ]
+            },
+        ]
     },
-
-    // --- Fallback Général ---
-    { path: '**', redirectTo: 'auth/login' },
+    {
+        path: 'auth',
+        canActivate: [publicGuard],
+        loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
+    },
+    { path: '**', redirectTo: '' } // Redirige les routes inconnues
 ];

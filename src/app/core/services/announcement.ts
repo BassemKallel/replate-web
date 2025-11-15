@@ -1,71 +1,48 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Announcement } from '../models/announcement.model';
-import { AuthService } from './auth';
+// import { AuthService } from './auth'; // SUPPRIMÉ
 
 @Injectable({
   providedIn: 'root'
 })
 export class AnnouncementService {
-  
-  private baseUrl: string;
-  private announcementsUrl: string;
+
+  // CORRIGÉ: 'baseUrl' est défini directement
+  // Il n'y a plus de dépendance à AuthService
+  private baseUrl = 'http://localhost:8080/api/announcements';
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) { 
-    // Initialise les URLs dans le constructeur
-    this.baseUrl = this.authService.getApiBaseUrl();
-    this.announcementsUrl = `${this.baseUrl}/announcements`;
+    private http: HttpClient
+    // private authService: AuthService // SUPPRIMÉ
+  ) {
+    // La ligne this.baseUrl = ... a été supprimée
   }
 
-  /**
-   * (RDT-5) Crée une nouvelle annonce.
-   * POST /api/announcements
-   */
-  createAnnouncement(formData: FormData): Observable<string> {
-    // Le backend attend FormData et répond avec du texte
-    // [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/AnnouncementController.java]
-    return this.http.post(`${this.announcementsUrl}`, formData, { responseType: 'text' });
+  // ... (le reste du service est correct) ...
+
+  getMyAnnouncements(): Observable<Announcement[]> {
+    return this.http.get<Announcement[]>(`${this.baseUrl}/my-announcements`);
   }
 
-  /**
-   * (RDT-6) Met à jour une annonce existante.
-   * PUT /api/announcements/{id}
-   */
-  updateAnnouncement(id: string, formData: FormData): Observable<string> {
-    // Le backend attend FormData et répond avec du texte
-    // [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/AnnouncementController.java]
-    return this.http.put(`${this.announcementsUrl}/${id}`, formData, { responseType: 'text' });
+  deleteAnnouncement(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  /**
-   * (RDT-7) Supprime une annonce.
-   * DELETE /api/announcements/{id}
-   */
-  deleteAnnouncement(id: number): Observable<string> {
-    // Le backend répond avec du texte
-    // [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/AnnouncementController.java]
-    return this.http.delete(`${this.announcementsUrl}/${id}`, { responseType: 'text' });
-  }
-
-  /**
-   * Récupère toutes les annonces du Merchant connecté.
-   * GET /api/announcements/merchant
-   * [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/AnnouncementController.java]
-   */
-  getMerchantAnnouncements(): Observable<Announcement[]> {
-    return this.http.get<Announcement[]>(`${this.announcementsUrl}/merchant`);
-  }
-
-  /**
-   * Récupère une annonce par son ID.
-   * GET /api/announcements/{id}
-   * [cite: bassemkallel/replate-backend/Replate-Backend-dev/src/main/java/com/replate/replatebackend/controller/AnnouncementController.java]
-   */
   getAnnouncementById(id: string): Observable<Announcement> {
-    return this.http.get<Announcement>(`${this.announcementsUrl}/${id}`);
+    return this.http.get<Announcement>(`${this.baseUrl}/${id}`);
+  }
+
+  getAllAnnouncements(): Observable<Announcement[]> {
+    return this.http.get<Announcement[]>(this.baseUrl);
+  }
+
+  createAnnouncement(data: any): Observable<Announcement> {
+    return this.http.post<Announcement>(this.baseUrl, data);
+  }
+
+  updateAnnouncement(id: string, data: any): Observable<Announcement> {
+    return this.http.put<Announcement>(`${this.baseUrl}/${id}`, data);
   }
 }

@@ -1,74 +1,65 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common'; // <-- Pipes
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { Announcement } from '../../../core/models/announcement.model';
+import { ActivatedRoute, Router } from '@angular/router'; // CORRIGÉ: Importe Router
 import { AnnouncementService } from '../../../core/services/announcement';
-import { AuthService } from '../../../core/services/auth';
+import { Announcement } from '../../../core/models/announcement.model';
+import { CommonModule, DatePipe } from '@angular/common';
+import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
+import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog'; // CORRIGÉ: Importe ConfirmDialog
 
 @Component({
   selector: 'app-announcement-detail',
   standalone: true,
-  imports: [CommonModule, DatePipe, TitleCasePipe], // <-- Pipes
+  // CORRIGÉ: Ajoute ConfirmDialog
+  imports: [CommonModule, DatePipe, StatusBadge, ConfirmDialog],
   templateUrl: './announcement-detail.html',
   styleUrls: ['./announcement-detail.css']
 })
-export class AnnouncementDetailComponent implements OnInit {
-
-  public announcement$: Observable<Announcement>;
-  public baseUrl: string;
+export class AnnouncementDetail implements OnInit {
+  announcement: Announcement | null = null;
+  
+  // CORRIGÉ: Ajout de la logique de dialogue
+  showDeleteConfirm = false;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private announcementService: AnnouncementService,
-    private authService: AuthService
-  ) {
-    this.baseUrl = this.authService.getApiBaseUrl(); // Pour l'image
-    this.announcement$ = this.announcementService.getAnnouncementById('0'); // Initialisation par défaut
-  }
+    private router: Router, // CORRIGÉ: Injecte Router
+    private announcementService: AnnouncementService
+  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.loadDetails(id);
-    } else {
-      // Gérer le cas où l'ID est manquant
-      this.router.navigate(['/merchant/my-announcements']);
-    }
-  }
-
-  loadDetails(id: string): void {
-    this.announcement$ = this.announcementService.getAnnouncementById(id);
-  }
-
-  /**
-   * (RDT-6) Navigue vers le formulaire en mode Édition
-   */
-  onEdit(id: number): void {
-    // Navigue vers la nouvelle route /announcement-editor/:id
-    this.router.navigate(['/merchant/announcement-editor', id]);
-  }
-
-  /**
-   * (RDT-7) Supprime l'annonce
-   */
-  onDelete(id: number): void {
-    if (confirm("Voulez-vous vraiment supprimer cette annonce ?")) {
-      this.announcementService.deleteAnnouncement(id).subscribe({
-        next: (response) => {
-          console.log(response); // "Annonce supprimée avec succès"
-          this.router.navigate(['/merchant/my-announcements']);
-        },
-        error: (err) => {
-          console.error("Erreur lors de la suppression", err);
-          alert("Une erreur est survenue lors de la suppression.");
-        }
+      this.announcementService.getAnnouncementById(id).subscribe(data => {
+        this.announcement = data;
       });
     }
   }
 
-  // TODO: Logique pour accepter/rejeter les offres
-  onAccept(offer: any): void { alert('Logique d\'acceptation à implémenter.'); }
-  onDecline(offer: any): void { alert('Logique de rejet à implémenter.'); }
+  // CORRIGÉ: Ajout de la fonction 'onEdit'
+  onEdit(id: string): void {
+    this.router.navigate(['/merchant/edit', id]);
+  }
+
+  // CORRIGÉ: Ajout de la logique 'onDelete'
+  requestDelete(): void {
+    this.showDeleteConfirm = true;
+  }
+
+  handleDeleteConfirm(confirmed: boolean): void {
+    if (confirmed && this.announcement) {
+      this.announcementService.deleteAnnouncement(this.announcement.id).subscribe(() => {
+        this.router.navigate(['/merchant/my-announcements']); // Redirige après suppression
+      });
+    }
+    this.showDeleteConfirm = false;
+  }
+
+  // Helper pour l'affichage de l'image
+  getImageUrl(path: string | undefined): string {
+    if (!path) {
+      return 'assets/images/replate-bg.png'; // Image par défaut
+    }
+    // 'path' est déjà une URL complète
+    return path;
+  }
 }

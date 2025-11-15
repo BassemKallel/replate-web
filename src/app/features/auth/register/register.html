@@ -2,19 +2,19 @@
 
     <!-- ... (Partie gauche avec l'image) ... -->
     <div class="relative hidden w-1/2 md:block">
-      <div class="bg-image absolute inset-0"></div>
-      <div class="absolute inset-0 bg-black/60"></div>
-      <div class="relative z-10 flex h-full flex-col justify-between text-white">
-          <div class="flex items-center justify-start gap-3 mb-10 p-5">
-              <img src="../../../../assets/images/logo-replate.png" alt="Replate Logo" class="h-44 w-auto">
-          </div>
-          <div class="max-w-md p-10 ">
-              <h1 class="text-6xl font-bold leading-tight">Together,<br>we create<br>lasting impact</h1>
-              <p class="mt-6 text-xl text-gray-200">
-                  Join changemakers. Donate, track impact, and see real results — all in one app.
-              </p>
-          </div>
-      </div>
+        <div class="bg-image absolute inset-0"></div>
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative z-10 flex h-full flex-col justify-between text-white">
+            <div class="flex items-center justify-start gap-3 mb-10 p-5">
+                <img src="../../../../assets/images/logo-replate.png" alt="Replate Logo" class="h-44 w-auto">
+            </div>
+            <div class="max-w-md p-10 ">
+                <h1 class="text-6xl font-bold leading-tight">Together,<br>we create<br>lasting impact</h1>
+                <p class="mt-6 text-xl text-gray-200">
+                    Join changemakers. Donate, track impact, and see real results — all in one app.
+                </p>
+            </div>
+        </div>
     </div>
 
     <div class="flex w-full flex-col items-center bg-[#FFF8E1] p-16 overflow-y-auto md:w-1/2">
@@ -60,7 +60,7 @@
                     <!-- 
                       CORRECTION 2 : 'regNumber' supprimé et 'grid-cols-1' appliqué
                     -->
-                    <div class="grid grid-cols-1 gap-4"> 
+                    <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="text-sm font-semibold text-gray-700">Organization Name</label>
                             <input formControlName="orgName" type="text" placeholder="Bakery Ilhem"
@@ -95,19 +95,9 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Fichiers (S'affichent si ce n'est PAS un bénéficiaire) -->
                 <div *ngIf="userType !== 'BENEFICIARY'" class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-sm font-semibold text-gray-700">Profile Picture</label>
-                        <label for="profilePic" class="file-upload-label">
-                            <i class="fa-solid fa-camera"></i>
-                            <span *ngIf="!profilePicFilename">Choose a PNG</span>
-                            <span *ngIf="profilePicFilename" class="file-name">{{ profilePicFilename }}</span>
-                        </label>
-                        <input id="profilePic" type="file" class="hidden" (change)="onFileChange($event, 'profilePic')"
-                            accept="image/png, image/jpeg">
-                    </div>
                     <div>
                         <label class="text-sm font-semibold text-gray-700">Verification Document</label>
                         <label for="verificationDoc" class="file-upload-label">
@@ -147,13 +137,13 @@
                     *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched">
                     Les mots de passe ne correspondent pas.
                 </div>
-                
+
                 <!-- Erreurs globales (API, etc.) -->
                 <div *ngIf="errorMessage" class="text-red-600 text-sm">
-                  {{ errorMessage }}
+                    {{ errorMessage }}
                 </div>
                 <div *ngIf="successMessage" class="text-green-600 text-sm">
-                  {{ successMessage }}
+                    {{ successMessage }}
                 </div>
 
                 <!-- Bouton de Soumission -->
